@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FindBugsFilter>
+
+<!-- START OF HIGH WARNINGS
+ END OF HIGH WARNINGS -->
+
+<!-- START OF MEDIUM WARNINGS -->
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS"/>
+    <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+    <Bug pattern="ES_COMPARING_STRINGS_WITH_EQ"/>
+    <Bug pattern="ICAST_IDIV_CAST_TO_DOUBLE"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+    <Bug pattern="MF_CLASS_MASKS_FIELD"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+    <Bug pattern="NM_CLASS_NOT_EXCEPTION"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+    <Bug pattern="NP_TOSTRING_COULD_RETURN_NULL"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+    <Bug pattern="SKIPPED_CLASS_TOO_BIG"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    <Bug pattern="UR_UNINIT_READ"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+<!--END OF MEDIUM WARNINGS-->
+
+
+<!-- START OF LOW WARNINGS -->
+    <Bug pattern="DLS_DEAD_LOCAL_STORE_OF_NULL"/>
+    <Bug pattern="DM_CONVERT_CASE"/>
+    <Bug pattern="FE_FLOATING_POINT_EQUALITY"/>
+    <Bug pattern="HSC_HUGE_SHARED_STRING_CONSTANT"/>
+    <Bug pattern="IP_PARAMETER_IS_DEAD_BUT_OVERWRITTEN"/>
+    <Bug pattern="ITA_INEFFICIENT_TO_ARRAY"/>
+    <Bug pattern="LI_LAZY_INIT_STATIC"/>
+    <Bug pattern="NM_CONFUSING"/>
+    <Bug pattern="NS_NON_SHORT_CIRCUIT"/>
+    <Bug pattern="RpC_REPEATED_CONDITIONAL_TEST"/>
+    <Bug pattern="SE_BAD_FIELD_INNER_CLASS"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_NEEDS_THIS"/>
+    <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+<!-- END OF LOW WARNINGS-->
+
+<!-- Remove all NOISE -->
+    <Bug catagory="NOISE"/>
+
+<!-- Source Exclusions - Do not modify -->
+    <Match>
+        <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    
+    <Match>
+      <Or> 
+        <Field name="curWidget"/>
+        <Field name="invid_colnam"/>
+      </Or>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+
+</FindBugsFilter>

@@ -1,0 +1,152 @@
+<project name="checkstyle" default="default" basedir="../../..">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+
+    <property name="java.dir" location="server/java" />
+    <property name="java.3rdparty.dir" location="${java.dir}/3rdparty" />
+    <property name="java.log.dir" location="${java.dir}/log" />
+    <property name="java.log.checkstyle.dir" location="${java.log.dir}/checkstyle" />
+    <property name="java.src.dir" location="${java.dir}/src"/>
+    <property name="java.build.dir" location="${java.dir}/build"/>
+    <property name="java.classes.dir" location="${java.build.dir}/classes"/>
+
+    <property name="test.dir" location="test" />
+    <property name="test.java.dir" location="${test.dir}/java" />
+    <property name="test.java.3rdparty.dir" location="${test.java.dir}/3rdparty" />
+    <property name="test.java.lib.dir" location="${test.java.dir}/lib" />
+    <property name="test.java.log.dir" location="${test.java.dir}/log" />
+    <property name="test.java.log.checkstyle.dir" location="${test.java.log.dir}/checkstyle" />
+    <property name="test.java.src.dir" location="${test.java.dir}/src"/>
+    <property name="test.java.build.dir" location="${test.java.dir}/build"/>
+    <property name="test.java.classes.dir" location="${test.java.build.dir}/classes"/>
+
+    <property name="tools.dir" location="tools" />
+    <property name="tools.java.dir" location="${tools.dir}/java" />
+    <property name="tools.java.checkstyle.dir" location="${tools.java.dir}/checkstyle" />
+    
+    <fileset id="java.dependency.lib.files" dir="${java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="java.class.path">
+        <fileset refid="java.dependency.lib.files"/>
+    </path>
+
+    <!-- test properties -->
+    <fileset id="test.java.dependency.lib.files" dir="${test.java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="test.java.class.path">
+        <pathelement location="${java.classes.dir}" />
+        <pathelement location="${test.java.classes.dir}" />
+        <fileset refid="java.dependency.lib.files" />
+        <fileset refid="test.java.dependency.lib.files" />
+    </path>
+
+    <patternset id="all.jars">
+        <include name="**/*.jar"/>
+    </patternset>
+
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="checkstyle" />
+    </target>
+
+    <target name="checkstyle">
+        <antcall target="checkstyle-java" />
+        <antcall target="checkstyle-test-java" />
+    </target>
+
+    <target name="clean">
+        <antcall target="checkstyle-clean" />
+    </target>
+
+    <target name="checkstyle-clean">
+        <antcall target="checkstyle-java-clean" />
+        <antcall target="checkstyle-test-java-clean" />
+    </target>
+
+    <target name="java-clean">
+        <antcall target="checkstyle-java-clean" />
+    </target>
+    
+    <target name="java-init">
+        <antcall target="checkstyle-java-init" />
+    </target>
+    
+    <target name="java">
+        <antcall target="checkstyle-java" />
+    </target>
+
+    <target name="test-java-clean">
+        <antcall target="checkstyle-test-java-clean" />
+    </target>
+    
+    <target name="test-java-init">
+        <antcall target="checkstyle-test-java-init" />
+    </target>
+    
+    <target name="test-java">
+        <antcall target="checkstyle-test-java" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***         CHECKSTYLE SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <target name="checkstyle-java-clean">
+        <delete dir="${java.log.checkstyle.dir}" />
+    </target>
+    
+    <target name="checkstyle-java-init" depends="checkstyle-java-clean">
+        <mkdir dir="${java.log.checkstyle.dir}" />
+    </target>
+    
+    <target name="checkstyle-java" depends="checkstyle-java-init">
+    
+        <taskdef resource="checkstyletask.properties" classpath="${tools.java.checkstyle.dir}/checkstyle-5.4-all.jar" />
+        
+        <mkdir dir="${java.log.checkstyle.dir}" />
+        <checkstyle config="${tools.java.checkstyle.dir}/checkStyleConfig.xml" failOnViolation="false">
+            <classpath refid="java.class.path" />
+            <fileset dir="${java.src.dir}" includes="**/*.java" />
+            <formatter type="xml" toFile="${java.log.checkstyle.dir}/checkstyle_results.xml"/>
+        </checkstyle>
+
+    </target>
+
+    <target name="checkstyle-test-java-clean">
+        <delete dir="${test.java.log.checkstyle.dir}" />
+    </target>
+    
+    <target name="checkstyle-test-java-init" depends="checkstyle-test-java-clean">
+        <mkdir dir="${test.java.log.checkstyle.dir}" />
+    </target>
+    
+    <target name="checkstyle-test-java" depends="checkstyle-test-java-init">
+    
+        <taskdef resource="checkstyletask.properties" classpath="${tools.java.checkstyle.dir}/checkstyle-5.4-all.jar" />
+        
+        <mkdir dir="${test.java.log.checkstyle.dir}" />
+        <checkstyle config="${tools.java.checkstyle.dir}/checkStyleConfig.xml" failOnViolation="false">
+            <classpath refid="java.class.path" />
+            <classpath refid="test.java.class.path" />
+            <fileset dir="${test.java.src.dir}" includes="**/*.java" />
+            <formatter type="xml" toFile="${test.java.log.checkstyle.dir}/checkstyle_results.xml"/>
+        </checkstyle>
+
+    </target>
+
+</project>

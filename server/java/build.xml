@@ -1,0 +1,135 @@
+<project name="java" default="default" basedir="../..">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+    
+    <property name="java.dir" location="server/java" />
+    <property name="java.3rdparty.dir" location="${java.dir}/3rdparty" />
+    <property name="java.extern.dir" location="${java.dir}/javalib" />
+    <property name="java.javadocs.dir" location="${java.dir}/javadocs" />
+    <property name="java.lib.dir" location="${java.dir}/lib" />
+
+    <property name="java.src.dir" location="${java.dir}/src"/>
+    <property name="java.build.dir" location="${java.dir}/build"/>
+    <property name="java.classes.dir" location="${java.build.dir}/classes"/>
+
+    <fileset id="java.dependency.lib.files" dir="${java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="java.class.path">
+        <fileset refid="java.dependency.lib.files"/>
+    </path>
+
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="java" />
+    </target>
+
+    <target name="java">
+        <antcall target="java-jar" />
+    </target>
+
+    <target name="clean">
+    	<antcall target="java-clean" />
+    </target>
+
+    <target name="init">
+    	<antcall target="java-init" />
+    </target>
+
+    <target name="compile">
+    	<antcall target="java-compile" />
+    </target>
+
+    <target name="jar">
+    	<antcall target="java-jar" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***        MAIN PROJECT SECTION         *** -->
+    <!-- ******************************************* -->
+
+    <target name="java-clean">
+        <delete dir="${java.build.dir}"/>
+        <delete dir="${java.lib.dir}"/>
+        <delete dir="${java.extern.dir}"/>
+        <delete dir="${java.log.dir}"/>
+        <delete dir="${java.javadocs.dir}"/>
+    </target>
+
+    <target name="java-init" depends="java-clean">
+
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${java.classes.dir}"/>
+        <mkdir dir="${java.lib.dir}"/>
+        <mkdir dir="${java.extern.dir}"/>
+
+        <copy todir="${java.extern.dir}" flatten="true">
+            <fileset refid="java.dependency.lib.files"/>
+        </copy>
+
+    </target>
+
+    <target name="java-compile" depends="java-init">
+
+        <!-- Compile the java code from ${src}/java into ${build} -->
+        <javac srcdir="${java.src.dir}" destdir="${java.classes.dir}" source="1.6" target="1.6" debug="true" fork="true">
+            <classpath refid="java.class.path" />
+        </javac>
+
+    </target>
+
+    <target name="java-jar" depends="java-compile">
+
+        <!-- Put everything in ${build} into the wmd.jar file -->
+        <jar jarfile="${java.lib.dir}/range-ops.jar">
+            <fileset dir="${java.classes.dir}"/>
+        </jar>
+
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***           JAVADOC SECTION           *** -->
+    <!-- ******************************************* -->
+
+    <target name="javadoc">
+        <antcall target="javadoc-compile" />
+    </target>
+    
+    <target name="javadoc-clean">
+        <delete dir="${java.javadocs.dir}"/>
+    </target>
+
+    <target name="javadoc-init" depends="javadoc-clean">
+        <mkdir dir="${java.javadocs.dir}"/>
+    </target>
+
+    <target name="javadoc-compile" depends="javadoc-init">
+    
+        <javadoc sourcepath="${java.src.dir}" destdir="${java.javadocs.dir}" access="package" version="true"
+                 author="true" windowtitle="Range Operations API" doctitle="Range Operations API">
+                 
+            <classpath refid="java.class.path" />
+            
+            <link href="http://java.sun.com/javase/6/docs/api/" />
+
+            <fileset dir="${java.src.dir}" >
+                <include name="**/*.java"/>
+            </fileset>
+            
+        </javadoc>
+
+    </target>
+
+</project>

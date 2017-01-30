@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="cobertura" default="default" basedir="../../..">
+
+    <description>
+        Runs Cobertura Coverage tool on all Java code and generates a coverage report.
+        Coverage report is located in %DCSDIR%/tools/cobertura/reports.
+    </description>
+
+    <property environment="env"/>
+    
+    <property name="tools.dir" location="tools" />
+    <property name="tools.java.dir" location="${tools.dir}/java" />
+    <property name="tools.java.cobertura.dir" location="${tools.java.dir}/cobertura" />
+
+    <property name="java.dir" location="server/java" />
+    <property name="java.log.dir" location="${java.dir}/log" />
+    <property name="java.log.cobertura.dir" location="${java.log.dir}/cobertura" />
+    <property name="java.lib.dir" location="${java.dir}/lib" />
+    <property name="java.3rdparty.dir" location="${java.dir}/3rdparty" />
+    <property name="java.extern.dir" location="${java.dir}/javalib" />
+
+    <property name="java.src.dir" location="${java.dir}/src"/>
+    <property name="java.build.dir" location="${java.dir}/build"/>
+    <property name="java.classes.dir" location="${java.build.dir}/classes"/>
+    <property name="java.instrumented.dir" location="${java.build.dir}/instrumented"/>
+
+    <property name="java.reports.dir" value="${java.log.cobertura.dir}/coverage-reports" />
+    <property name="java.reports.junit.xml.dir" value="${java.reports.dir}/junit-xml" />
+    <property name="java.reports.junit.html.dir" value="${java.reports.dir}/junit-html" />
+    <property name="java.reports.coverage.xml.dir" value="${java.reports.dir}/cobertura-xml" />
+    <property name="java.reports.coverage.summaryxml.dir" value="${java.reports.dir}/cobertura-summary-xml" />
+    <property name="java.reports.coverage.html.dir" value="${java.reports.dir}/cobertura-html" />
+
+    <fileset id="java.dependency.lib.files" dir="${java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="java.class.path">
+        <fileset refid="java.dependency.lib.files"/>
+    </path>
+
+    <property name="test.dir" location="test" />
+    <property name="test.java.dir" location="${test.dir}/java" />
+    <property name="test.java.lib.dir" location="${test.java.dir}/lib" />
+    <property name="test.java.3rdparty.dir" location="${test.java.dir}/3rdparty" />
+    
+    <property name="test.java.src.dir" location="${test.java.dir}/src"/>
+    <property name="test.java.build.dir" location="${test.java.dir}/build"/>
+    <property name="test.java.classes.dir" location="${test.java.build.dir}/classes"/>
+
+    <fileset id="test.java.dependency.lib.files" dir="${test.java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="test.java.class.path">
+        <pathelement location="${java.classes.dir}" />
+        <pathelement location="${test.java.classes.dir}" />
+        <fileset refid="java.dependency.lib.files" />
+        <fileset refid="test.java.dependency.lib.files" />
+    </path>
+
+    <path id="junit.class.path">
+        <pathelement location="${java.classes.dir}" />
+        <pathelement location="${test.java.classes.dir}" />
+        <fileset refid="java.dependency.lib.files" />
+        <fileset refid="test.java.dependency.lib.files" />
+    </path>
+
+    <fileset id="junit.files" dir="${test.java.src.dir}" >
+        <include name="**/T?_*.java" />
+    </fileset>
+
+    <path id="cobertura.class.path">
+        <fileset dir="${tools.java.cobertura.dir}">
+            <include name="cobertura.jar" />
+            <include name="**/*.jar" />
+        </fileset>
+        <fileset refid="java.dependency.lib.files" />
+        <fileset refid="test.java.dependency.lib.files" />
+    </path>
+
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+	<target name="default">
+		<antcall target="cobertura" />
+	</target>
+
+	<target name="cobertura">
+		<antcall target="coverage" />
+	</target>
+	
+	<target name="coverage" depends="cobertura-test">
+		<antcall target="cobertura-coverage-report" />
+		<antcall target="cobertura-summary-coverage-report" />
+		<antcall target="cobertura-alternate-coverage-report" />
+	</target>
+	
+    <target name="clean">
+		<antcall target="cobertura-clean" />
+    </target>
+
+    <target name="init">
+		<antcall target="cobertura-init" />
+    </target>
+
+    <target name="compile">
+		<antcall target="cobertura-compile" />
+    </target>
+
+    <target name="instrument">
+		<antcall target="cobertura-instrument" />
+    </target>
+
+    <target name="test">
+		<antcall target="cobertura-test" />
+    </target>
+
+    <target name="coverage-check">
+		<antcall target="cobertura-coverage-check" />
+    </target>
+
+    <target name="coverage-report">
+		<antcall target="cobertura-coverage-report" />
+    </target>
+
+    <target name="summary-coverage-report">
+		<antcall target="cobertura-summary-coverage-report" />
+    </target>
+
+    <target name="alternate-coverage-report">
+		<antcall target="cobertura-alternate-coverage-report" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***             PMD SECTION             *** -->
+    <!-- ******************************************* -->
+
+    <target name="cobertura-clean">
+        <delete dir="${java.classes.dir}" />
+        <delete dir="${java.instrumented.dir}" />
+        <delete dir="${java.reports.dir}" />
+        <delete file="${java.log.cobertura.dir}/cobertura.log" />
+
+        <delete dir="${test.java.classes.dir}" />
+
+        <delete file="${tools.java.cobertura.dir}/cobertura.ser" />
+    </target>
+
+    <target name="cobertura-init" depends="cobertura-clean">
+
+        <taskdef classpathref="cobertura.class.path" resource="tasks.properties"/>
+
+        <mkdir dir="${java.classes.dir}" />
+        <mkdir dir="${java.instrumented.dir}" />
+        <mkdir dir="${java.reports.junit.xml.dir}" />
+        <mkdir dir="${java.reports.junit.html.dir}" />
+        <mkdir dir="${java.reports.coverage.xml.dir}" />
+        <mkdir dir="${java.reports.coverage.summaryxml.dir}" />
+        <mkdir dir="${java.reports.coverage.html.dir}" />
+        
+        <mkdir dir="${test.java.classes.dir}" />
+
+    </target>
+
+    <target name="cobertura-compile" depends="cobertura-init">
+        <javac srcdir="${java.src.dir}" destdir="${java.classes.dir}" debug="true" debuglevel="lines,source">
+            <classpath refid="cobertura.class.path" />
+        </javac>
+        <javac srcdir="${test.java.src.dir}" destdir="${test.java.classes.dir}" debug="true" debuglevel="lines,source">
+            <classpath location="${java.classes.dir}" />
+            <classpath refid="cobertura.class.path" />
+        </javac>
+    </target>
+
+    <target name="cobertura-instrument" depends="cobertura-compile">
+
+        <!--
+            Instrument the application classes, writing the
+            instrumented classes into ${java.instrumented.dir}.
+        -->
+        <cobertura-instrument datafile="${tools.java.cobertura.dir}/cobertura.ser" todir="${java.instrumented.dir}">
+            <!--
+                The following line causes instrument to ignore any
+                source line containing a reference to log4j, for the
+                purposes of coverage reporting.
+            -->
+            <ignore regex="org.apache.log4j.*" />
+
+            <fileset dir="${java.classes.dir}">
+                <!--
+                    Instrument all the application classes, but
+                    don't instrument the test classes.
+                -->
+                <include name="**/*.class" />
+                <!--<exclude name="**/T?_*.class" />-->
+            </fileset>
+        </cobertura-instrument>
+
+    </target>
+
+	<!-- <target name="cobertura-test" depends="cobertura-compile"> -->
+	<target name="cobertura-test" depends="cobertura-instrument">
+        <junit fork="yes" dir="${basedir}" failureProperty="test.failed" printSummary="true">
+            <!--
+                Specify the name of the coverage data file to use.
+                The value specified below is the default.
+            -->
+            <sysproperty key="net.sourceforge.cobertura.datafile" file="${tools.java.cobertura.dir}/cobertura.ser" />
+
+            <!--
+                Note the classpath order: instrumented classes are before the
+                original (uninstrumented) classes.  This is important.
+            -->
+            <classpath location="${java.instrumented.dir}" />
+            <classpath refid="junit.class.path"/>
+
+            <!--
+                The instrumented classes reference classes used by the
+                Cobertura runtime, so Cobertura and its dependencies
+                must be on your classpath.
+            -->
+            <classpath refid="cobertura.class.path" />
+
+            <formatter type="xml" />
+            <test name="${testcase}" todir="${java.reports.junit.xml.dir}" if="testcase" />
+            <batchtest todir="${java.reports.junit.xml.dir}" unless="testcase">
+                <fileset dir="${test.java.src.dir}">
+                    <include name="**/T?_*.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${java.reports.junit.xml.dir}">
+            <fileset dir="${java.reports.junit.xml.dir}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="${java.reports.junit.html.dir}" />
+        </junitreport>
+    </target>
+
+    <target name="cobertura-coverage-check">
+        <cobertura-check datafile="${tools.java.cobertura.dir}/cobertura.ser" branchrate="34" totallinerate="100" />
+    </target>
+
+    <target name="cobertura-coverage-report">
+        <!--
+            Generate an XML file containing the coverage data using
+            the "srcdir" attribute.
+        -->
+        <cobertura-report datafile="${tools.java.cobertura.dir}/cobertura.ser" srcdir="${java.src.dir}" destdir="${java.reports.coverage.xml.dir}" format="xml" />
+    </target>
+
+    <target name="cobertura-summary-coverage-report">
+        <!--
+            Generate an summary XML file containing the coverage data using
+            the "srcdir" attribute.
+        -->
+        <cobertura-report datafile="${tools.java.cobertura.dir}/cobertura.ser" srcdir="${java.src.dir}" destdir="${java.reports.coverage.summaryxml.dir}" format="summaryXml" />
+    </target>
+
+    <target name="cobertura-alternate-coverage-report">
+        <!--
+            Generate a series of HTML files containing the coverage
+            data in a user-readable form using nested source filesets.
+        -->
+        <cobertura-report  datafile="${tools.java.cobertura.dir}/cobertura.ser" destdir="${java.reports.coverage.html.dir}" maxmemory="1024m">
+            <fileset dir="${java.src.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </cobertura-report>
+    </target>
+
+</project>

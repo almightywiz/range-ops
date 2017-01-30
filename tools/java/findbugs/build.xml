@@ -1,0 +1,177 @@
+<project name="findbugs" default="default" basedir="../../..">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+
+    <property name="java.dir" location="server/java" />
+    <property name="java.3rdparty.dir" location="${java.dir}/3rdparty" />
+    <property name="java.log.dir" location="${java.dir}/log" />
+    <property name="java.log.findbugs.dir" location="${java.log.dir}/findbugs" />
+    <property name="java.src.dir" location="${java.dir}/src"/>
+    <property name="java.build.dir" location="${java.dir}/build"/>
+    <property name="java.classes.dir" location="${java.build.dir}/classes"/>
+
+    <property name="test.dir" location="test" />
+    <property name="test.java.dir" location="${test.dir}/java" />
+    <property name="test.java.3rdparty.dir" location="${test.java.dir}/3rdparty" />
+    <property name="test.java.lib.dir" location="${test.java.dir}/lib" />
+    <property name="test.java.log.dir" location="${test.java.dir}/log" />
+    <property name="test.java.log.findbugs.dir" location="${test.java.log.dir}/findbugs" />
+    <property name="test.java.src.dir" location="${test.java.dir}/src"/>
+    <property name="test.java.build.dir" location="${test.java.dir}/build"/>
+    <property name="test.java.classes.dir" location="${test.java.build.dir}/classes"/>
+
+    <property name="tools.dir" location="tools" />
+    <property name="tools.java.dir" location="${tools.dir}/java" />
+    <property name="tools.java.findbugs.dir" location="${tools.java.dir}/findbugs"/>
+
+    <fileset id="java.dependency.lib.files" dir="${java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="java.class.path">
+        <fileset refid="java.dependency.lib.files"/>
+    </path>
+
+    <!-- test properties -->
+    <fileset id="test.java.dependency.lib.files" dir="${test.java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="test.java.class.path">
+        <pathelement location="${java.classes.dir}" />
+        <pathelement location="${test.java.classes.dir}" />
+        <fileset refid="java.dependency.lib.files" />
+        <fileset refid="test.java.dependency.lib.files" />
+    </path>
+
+    <path id="tools.java.findbugs.class.path">
+        <fileset dir="${tools.java.findbugs.dir}">
+            <patternset refid="all.jars"/>
+        </fileset>
+    </path>
+
+    <patternset id="all.jars">
+        <include name="**/*.jar"/>
+    </patternset>
+
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="findbugs" />
+    </target>
+
+    <target name="findbugs">
+        <antcall target="findbugs-java" />
+        <antcall target="findbugs-test-java" />
+    </target>
+
+    <target name="clean">
+        <antcall target="findbugs-clean" />
+    </target>
+    
+    <target name="findbugs-clean">
+        <antcall target="findbugs-java-clean" />
+        <antcall target="findbugs-test-java-clean" />
+    </target>
+    
+    <target name="java-clean">
+        <antcall target="findbugs-java-clean" />
+    </target>
+    
+    <target name="java-init">
+        <antcall target="findbugs-java-init" />
+    </target>
+    
+    <target name="java">
+        <antcall target="findbugs-java" />
+    </target>
+
+    <target name="test-java-clean">
+        <antcall target="findbugs-test-java-clean" />
+    </target>
+    
+    <target name="test-java-init">
+        <antcall target="findbugs-test-java-init" />
+    </target>
+    
+    <target name="test-java">
+        <antcall target="findbugs-test-java" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***          FINDBUGS SECTION           *** -->
+    <!-- ******************************************* -->
+
+    <target name="findbugs-java-clean">
+        <delete dir="${java.log.findbugs.dir}"/>
+    </target>
+    
+    <target name="findbugs-java-init" depends="findbugs-java-clean">
+        <mkdir dir="${java.log.findbugs.dir}"/>
+    </target>
+    
+    <target name="findbugs-java" depends="findbugs-java-init">
+        
+        <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpathref="tools.java.findbugs.class.path"/>
+        <property name="findbugs.output.fmt" value="html" />
+        
+        <property name="findbugs.output.path" location="${java.log.findbugs.dir}/findbugs_report" />
+        
+        <path id="findbugs.source.path">
+            <pathelement location="${java.src.dir}"/>
+        </path>
+
+        <findbugs home="${tools.java.findbugs.dir}" output="${findbugs.output.fmt}" reportLevel="low" excludeFilter="${tools.java.findbugs.dir}/rules.findbugs.xml"
+                  jvmargs="-Xmx1024m" timeout="90000000" effort="max" outputfile="${findbugs.output.path}.${findbugs.output.fmt}" quietErrors="true">
+            <sourcePath refid="findbugs.source.path"/>
+            <class location="${java.classes.dir}"/>
+            <auxClasspath>
+                <path refid="java.class.path"/>
+            </auxClasspath>
+        </findbugs>
+        
+    </target>
+
+    <target name="findbugs-test-java-clean">
+        <delete dir="${test.java.log.findbugs.dir}"/>
+    </target>
+    
+    <target name="findbugs-test-java-init" depends="findbugs-test-java-clean">
+        <mkdir dir="${test.java.log.findbugs.dir}"/>
+    </target>
+    
+    <target name="findbugs-test-java" depends="findbugs-test-java-init">
+        
+        <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpathref="tools.java.findbugs.class.path"/>
+        <property name="findbugs.output.fmt" value="html" />
+        
+        <mkdir dir="${test.java.log.dir}"/>
+        <property name="test.findbugs.output.path" location="${test.java.log.findbugs.dir}/findbugs_report" />
+
+        <path id="test.findbugs.source.path">
+            <pathelement location="${test.java.src.dir}"/>
+        </path>
+
+        <findbugs home="${tools.java.findbugs.dir}" output="${findbugs.output.fmt}" reportLevel="low" excludeFilter="${tools.java.findbugs.dir}/rules.findbugs.xml"
+                  jvmargs="-Xmx1024m" timeout="90000000" effort="max" outputfile="${test.findbugs.output.path}.${findbugs.output.fmt}" quietErrors="true">
+            <sourcePath refid="test.findbugs.source.path"/>
+            <class location="${test.java.classes.dir}"/>
+            <auxClasspath>
+                <path refid="java.class.path"/>
+                <path refid="test.java.class.path"/>
+            </auxClasspath>
+        </findbugs>
+        
+    </target>
+
+</project>

@@ -1,0 +1,39 @@
+<project name="server" default="default" basedir="..">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+    
+	<property name="java.dir" location="server/java" />
+	    
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="server" />
+    </target>
+
+    <target name="server">
+        <ant antfile="${java.dir}/build.xml" target="java" />
+    </target>
+
+    <target name="clean">
+        <antcall target="server-clean" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***        MAIN PROJECT SECTION         *** -->
+    <!-- ******************************************* -->
+
+    <target name="server-clean">
+        <ant antfile="${java.dir}/build.xml" target="java-clean" />
+    </target>
+
+</project>

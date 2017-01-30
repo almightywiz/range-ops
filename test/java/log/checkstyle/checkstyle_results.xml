@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.4">
+<file name="C:\dev\google-code\range-ops\test\java\src\com\tobecontinued\util\ranges\TU_Ranges.java">
+<error line="19" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertEquals." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="20" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertFalse." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="21" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertTrue." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="23" severity="warning" message="Wrong order for &apos;java.lang.reflect.Constructor&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
+<error line="36" severity="warning" message="Wrong order for &apos;com.tobecontinued.util.ranges.core.Range&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
+<error line="50" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="155" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="173" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="204" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="227" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="285" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="305" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="383" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="417" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="457" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="471" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="509" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="547" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+</file>
+<file name="C:\dev\google-code\range-ops\test\java\src\com\tobecontinued\util\ranges\core\TU_Range.java">
+<error line="19" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertEquals." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="20" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertFalse." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="21" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertNotNull." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="22" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertTrue." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="24" severity="warning" message="Wrong order for &apos;org.junit.Test&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
+<error line="26" severity="warning" message="Wrong order for &apos;com.tobecontinued.util.ranges.core.RangeNode.EndPointType&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
+<error line="40" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="68" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="85" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="111" severity="warning" message="Line is longer than 120 characters." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="117" severity="warning" message="Line is longer than 120 characters." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="134" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="182" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+</file>
+<file name="C:\dev\google-code\range-ops\test\java\src\com\tobecontinued\util\ranges\core\TU_RangeNode.java">
+<error line="19" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertEquals." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="20" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertFalse." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="21" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertNull." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="22" severity="warning" message="Using a static member import should be avoided - org.junit.Assert.assertTrue." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStaticImportCheck"/>
+<error line="24" severity="warning" message="Wrong order for &apos;org.junit.Test&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
+<error line="29" severity="warning" message="Wrong order for &apos;com.tobecontinued.util.ranges.core.RangeNode.EndPointType&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
+<error line="43" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="138" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="183" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="235" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="258" column="5" severity="warning" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+</file>
+</checkstyle>

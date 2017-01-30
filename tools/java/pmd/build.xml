@@ -1,0 +1,176 @@
+<project name="pmd" default="default" basedir="../../..">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+
+    <property name="java.dir" location="server/java" />
+    <property name="java.3rdparty.dir" location="${java.dir}/3rdparty" />
+    <property name="java.log.dir" location="${java.dir}/log" />
+    <property name="java.log.pmd.dir" location="${java.log.dir}/pmd" />
+    <property name="java.src.dir" location="${java.dir}/src"/>
+    <property name="java.build.dir" location="${java.dir}/build"/>
+    <property name="java.classes.dir" location="${java.build.dir}/classes"/>
+
+    <property name="test.dir" location="test" />
+    <property name="test.java.dir" location="${test.dir}/java" />
+    <property name="test.java.3rdparty.dir" location="${test.java.dir}/3rdparty" />
+    <property name="test.java.lib.dir" location="${test.java.dir}/lib" />
+    <property name="test.java.log.dir" location="${test.java.dir}/log" />
+    <property name="test.java.log.pmd.dir" location="${test.java.log.dir}/pmd" />
+    <property name="test.java.src.dir" location="${test.java.dir}/src"/>
+    <property name="test.java.build.dir" location="${test.java.dir}/build"/>
+    <property name="test.java.classes.dir" location="${test.java.build.dir}/classes"/>
+
+    <property name="tools.dir" location="tools" />
+    <property name="tools.java.dir" location="${tools.dir}/java" />
+    <property name="tools.java.pmd.dir" location="${tools.java.dir}/pmd-4.3"/>
+
+    <fileset id="java.dependency.lib.files" dir="${java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="java.class.path">
+        <fileset refid="java.dependency.lib.files"/>
+    </path>
+
+    <!-- test properties -->
+    <fileset id="test.java.dependency.lib.files" dir="${test.java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="test.java.class.path">
+        <pathelement location="${java.classes.dir}" />
+        <pathelement location="${test.java.classes.dir}" />
+        <fileset refid="java.dependency.lib.files" />
+        <fileset refid="test.java.dependency.lib.files" />
+        <fileset dir="${tools.java.pmd.dir}">
+            <patternset refid="all.jars"/>
+        </fileset>
+    </path>
+
+    <path id="tools.java.pmd.class.path">
+        <fileset dir="${tools.java.pmd.dir}">
+            <patternset refid="all.jars"/>
+        </fileset>
+        <fileset dir="${test.java.lib.dir}">
+            <include name="range-ops-test.jar"/>
+        </fileset>
+    </path>  
+
+    <patternset id="all.jars">
+        <include name="**/*.jar"/>
+    </patternset>
+
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="pmd" />
+    </target>
+
+    <target name="pmd">
+        <antcall target="pmd-java" />
+        <antcall target="pmd-test-java" />
+    </target>
+
+    <target name="clean">
+        <antcall target="pmd-clean" />
+    </target>
+    
+    <target name="pmd-clean">
+        <antcall target="pmd-java-clean" />
+        <antcall target="pmd-test-java-clean" />
+    </target>
+    
+    <target name="java-clean">
+        <antcall target="pmd-java-clean" />
+    </target>
+
+    <target name="java-init">
+        <antcall target="pmd-java-init" />
+    </target>
+    
+    <target name="java">
+        <antcall target="pmd-java" />
+    </target>
+
+    <target name="test-java-clean">
+        <antcall target="pmd-test-java-clean" />
+    </target>
+
+    <target name="test-java-init">
+        <antcall target="pmd-test-java-init" />
+    </target>
+    
+    <target name="test-java">
+        <antcall target="pmd-test-java" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***             PMD SECTION             *** -->
+    <!-- ******************************************* -->
+
+    <target name="pmd-java-clean">
+        <delete dir="${java.log.pmd.dir}"/>
+    </target>
+
+    <target name="pmd-java-init" depends="pmd-java-clean">
+        <mkdir dir="${java.log.pmd.dir}"/>
+    </target>
+    
+    <target name="pmd-java" depends="pmd-java-init">
+
+        <echo>Running PMD...</echo>
+
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="tools.java.pmd.class.path"/>
+        <property name="pmd.output.fmt" value="html" />
+
+        <property name="pmd.output.path" location="${java.log.pmd.dir}/pmd_report" />
+        <pmd rulesetfiles="${tools.java.pmd.dir}/rules.pmd.xml">
+            <formatter type="${pmd.output.fmt}" toFile="${pmd.output.path}.${pmd.output.fmt}"/>
+            <fileset dir=".">
+                <include name="${java.src.dir}/**/*.java"/>
+            </fileset>
+            <auxClasspath>
+                <path refid="test.java.class.path"/>
+            </auxClasspath>
+        </pmd>
+        <echo>Output saved to ${pmd.output.path}.${pmd.output.fmt}</echo>
+
+    </target>
+
+    <target name="pmd-test-java-clean">
+        <delete dir="${test.java.log.pmd.dir}"/>
+    </target>
+
+    <target name="pmd-test-java-init" depends="pmd-test-java-clean">
+        <mkdir dir="${test.java.log.pmd.dir}"/>
+    </target>
+    
+    <target name="pmd-test-java" depends="pmd-test-java-init">
+
+        <echo>Running PMD...</echo>
+
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="tools.java.pmd.class.path"/>
+        <property name="pmd.output.fmt" value="html" />
+
+        <property name="test.pmd.output.path" location="${test.java.log.pmd.dir}/pmd_report" />
+        <pmd rulesetfiles="${tools.java.pmd.dir}/rules.pmd.xml">
+            <formatter type="${pmd.output.fmt}" toFile="${test.pmd.output.path}.${pmd.output.fmt}"/>
+            <fileset dir=".">
+                <include name="${test.java.src.dir}/**/*.java"/>
+            </fileset>
+        </pmd>
+        <echo>Output saved to ${test.pmd.output.path}.${pmd.output.fmt}</echo>
+
+    </target>
+
+</project>

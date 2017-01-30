@@ -1,0 +1,42 @@
+<project name="tools" default="default" basedir="../..">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+
+    <property name="tools.dir" location="tools" />
+    <property name="tools.java.dir" location="${tools.dir}/java" />
+    <property name="tools.java.checkstyle.dir" location="${tools.java.dir}/checkstyle" />
+    <property name="tools.java.cobertura.dir" location="${tools.java.dir}/cobertura" />
+    <property name="tools.java.findbugs.dir" location="${tools.java.dir}/findbugs" />
+    <property name="tools.java.pmd.dir" location="${tools.java.dir}/pmd" />
+
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="tools-java" />
+    </target>
+
+    <target name="tools-java">
+        <ant antfile="${tools.java.checkstyle.dir}/build.xml" target="checkstyle" />
+        <ant antfile="${tools.java.cobertura.dir}/build.xml" target="cobertura" />
+        <ant antfile="${tools.java.findbugs.dir}/build.xml" target="findbugs" />
+        <ant antfile="${tools.java.pmd.dir}/build.xml" target ="pmd" />
+    </target>
+
+    <target name="tools-java-clean">
+        <ant antfile="${tools.java.checkstyle.dir}/build.xml" target="checkstyle-clean" />
+        <ant antfile="${tools.java.cobertura.dir}/build.xml" target="cobertura-clean" />
+        <ant antfile="${tools.java.findbugs.dir}/build.xml" target="findbugs-clean" />
+        <ant antfile="${tools.java.pmd.dir}/build.xml" target="pmd-clean" />
+    </target>
+    
+</project>

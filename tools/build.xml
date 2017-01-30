@@ -1,0 +1,36 @@
+<project name="tools" default="default" basedir="..">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+
+    <property name="tools.dir" location="tools" />
+    <property name="tools.java.dir" location="${tools.dir}/java" />
+
+	<!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="tools" />
+    </target>
+
+    <target name="tools">
+        <ant antfile="${tools.java.dir}/build.xml" target="tools-java" />
+    </target>
+
+    <target name="clean">
+    	<antcall target="tools-clean" />
+    </target>
+
+    <target name="tools-clean">
+        <ant antfile="${tools.java.dir}/build.xml" target="tools-java-clean" />
+    </target>
+
+</project>

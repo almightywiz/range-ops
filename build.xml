@@ -1,0 +1,107 @@
+<project name="range-ops" default="default" basedir=".">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+
+	<property name="server.dir" location="server" />
+	
+	<property name="test.dir" location="test" />
+
+    <property name="tools.dir" location="tools" />
+    <property name="tools.java.dir" location="${tools.dir}/java" />
+    <property name="tools.java.checkstyle.dir" location="${tools.java.dir}/checkstyle" />
+    <property name="tools.java.cobertura.dir" location="${tools.java.dir}/cobertura" />
+    <property name="tools.java.findbugs.dir" location="${tools.java.dir}/findbugs" />
+    <property name="tools.java.pmd.dir" location="${tools.java.dir}/pmd" />
+	    
+    <!-- ******************************************* -->
+    <!-- ***          COPYRIGHT SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <target name="copyright">
+        
+        <echo>Removing non-TBC source code for producing copyright materials</echo>
+        
+        <!--
+        <echo>Removing 3rdparty directories</echo>
+        <delete dir="${3rdparty-lib}" />
+        <delete dir="${test-3rdparty-lib}" />
+        
+        <echo>Removing tools directory</echo>
+        <delete dir="${tools}" />
+        
+        <echo>Scrubbing build/classes directory</echo>
+        <delete dir="build" />
+        -->
+        
+    </target>
+
+    <target name="package">
+        <antcall target="clean" />
+    	<ant antfile="${server.dir}/build.xml" target="server" />
+    	<ant antfile="${server.dir}/java/build.xml" target="javadoc" />
+        <antcall target="copyright" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULTS SECTION           *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="compile-server" />
+    </target>
+
+    <target name="clean">
+        <ant antfile="${server.dir}/build.xml" target="server-clean" />
+        <ant antfile="${test.dir}/build.xml" target="test-clean" />
+        <ant antfile="${tools.dir}/build.xml" target="tools-clean" />
+    </target>
+	
+    <!-- ******************************************* -->
+    <!-- ***           SERVER SECTION            *** -->
+    <!-- ******************************************* -->
+	
+    <target name="compile-server">
+        <ant antfile="${server.dir}/build.xml" target="server" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***            TEST SECTION             *** -->
+    <!-- ******************************************* -->
+
+    <target name="compile-test">
+        <ant antfile="${test.dir}/build.xml" target="test" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***            TOOLS SECTION            *** -->
+    <!-- ******************************************* -->	
+
+    <target name="all-tools">
+        <ant antfile="${tools.dir}/build.xml" target="tools" />
+    </target>
+
+    <target name="checkstyle">
+        <ant antfile="${tools.java.checkstyle.dir}/build.xml" target="checkstyle" />
+    </target>
+
+    <target name="cobertura">
+        <ant antfile="${tools.java.cobertura.dir}/build.xml" target="cobertura" />
+    </target>
+
+    <target name="findbugs">
+        <ant antfile="${tools.java.findbugs.dir}/build.xml" target="findbugs" />
+    </target>
+
+    <target name="pmd">
+        <ant antfile="${tools.java.pmd.dir}/build.xml" target="pmd" />
+    </target>
+
+</project>

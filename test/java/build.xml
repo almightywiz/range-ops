@@ -1,0 +1,189 @@
+<project name="java" default="default" basedir="../..">
+    <description>
+        Range Operations build script
+    </description>
+
+    <!-- ******************************************* -->
+    <!-- ***          VARIABLES SECTION          *** -->
+    <!-- ******************************************* -->
+
+    <!-- global and misc properties for this build -->
+    <property environment="env"/>
+    <property name="tools.dir" location="tools" />
+    <property name="tools.java.dir" location="${tools.dir}/java" />
+    <property name="tools.java.cobertura.dir" location="${tools.java.dir}/cobertura" />
+    
+    <!-- src properties -->
+    <property name="java.dir" location="server/java" />
+    <property name="java.3rdparty.dir" location="${java.dir}/3rdparty" />
+    <property name="java.build.dir" location="${java.dir}/build"/>
+    <property name="java.classes.dir" location="${java.build.dir}/classes"/>
+
+    <fileset id="java.dependency.lib.files" dir="${java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <!-- test properties -->
+    <property name="test.dir" location="test" />
+    <property name="test.java.dir" location="${test.dir}/java" />
+    
+    <property name="test.java.3rdparty.dir" location="${test.java.dir}/3rdparty" />
+    <property name="test.java.extern.dir" location="${test.java.dir}/javalib" />
+    <property name="test.java.junits.dir" location="${test.java.dir}/junits" />
+    <property name="test.java.lib.dir" location="${test.java.dir}/lib" />
+    <property name="test.java.log.dir" location="${test.java.dir}/log" />
+    
+    <property name="test.java.src.dir" location="${test.java.dir}/src"/>
+    <property name="test.java.build.dir" location="${test.java.dir}/build"/>
+    <property name="test.java.classes.dir" location="${test.java.build.dir}/classes"/>
+
+    <fileset id="test.java.dependency.lib.files" dir="${test.java.3rdparty.dir}" >
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="test.java.class.path">
+        <pathelement location="${java.classes.dir}" />
+        <pathelement location="${test.java.classes.dir}" />
+        <fileset refid="java.dependency.lib.files" />
+        <fileset refid="test.java.dependency.lib.files" />
+    </path>
+
+    <!-- junit properties -->
+    <path id="junit.class.path">
+        <pathelement location="${java.classes.dir}" />
+        <pathelement location="${test.java.classes.dir}" />
+        <fileset refid="java.dependency.lib.files" />
+        <fileset refid="test.java.dependency.lib.files" />
+    </path>
+
+    <fileset id="junit.files" dir="${test.java.src.dir}" >
+        <include name="**/T?_*.java" />
+    </fileset>
+
+    <!-- ******************************************* -->
+    <!-- ***          DEFAULT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="default">
+        <antcall target="test-java" />
+    </target>
+
+    <target name="test-java">
+        <antcall target="test-java-jar" />
+    </target>
+
+    <target name="clean">
+        <antcall target="test-java-clean" />
+    </target>
+
+    <target name="init">
+        <antcall target="test-java-init" />
+    </target>
+
+    <target name="compile">
+        <antcall target="test-java-compile" />
+    </target>
+
+    <target name="jar">
+        <antcall target="test-java-jar" />
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***            TEST SECTION             *** -->
+    <!-- ******************************************* -->
+
+    <target name="test-java-clean">
+        <delete dir="${test.java.build.dir}"/>
+        <delete dir="${test.java.lib.dir}"/>
+        <delete dir="${test.java.log.dir}"/>
+        <delete dir="${test.java.extern.dir}"/>
+        <delete dir="${test.java.junits.dir}"/>
+    </target>
+
+    <target name="test-java-init" depends="test-java-clean">
+        <mkdir dir="${test.java.classes.dir}"/>
+        <mkdir dir="${test.java.lib.dir}"/>
+        <mkdir dir="${test.java.extern.dir}"/>
+        <mkdir dir="${test.java.junits.dir}"/>
+
+        <copy todir="${test.java.extern.dir}" flatten="true">
+            <fileset refid="test.java.dependency.lib.files"/>
+        </copy>
+    </target>
+
+    <target name="test-java-compile" depends="test-java-init">
+        <!-- Compile the java code from ${src}/java into ${build} -->
+        <javac srcdir="${test.java.src.dir}" destdir="${test.java.classes.dir}" source="1.6" target="1.6" debug="true" fork="true">
+            <classpath refid="test.java.class.path" />
+        </javac>
+
+        <!-- copy all supporting files to the build area -->
+        <!--
+        <copy todir="${build}" >
+            <fileset dir="${src}" >
+                <patternset refid="resource.files" />
+            </fileset>
+        </copy>
+        -->
+    </target>
+
+    <target name="test-java-jar" depends="test-java-compile">
+        <!-- Put everything in ${build} into the wmd.jar file -->
+        <jar jarfile="${test.java.lib.dir}/range-ops-test.jar">
+            <fileset dir="${test.java.classes.dir}"/>
+        </jar>
+    </target>
+
+    <!-- ******************************************* -->
+    <!-- ***            JUNIT SECTION            *** -->
+    <!-- ******************************************* -->
+
+    <target name="junit" >
+        <junit printsummary="true">
+            <classpath refid="junit.class.path"/>
+            <formatter type="plain"/>
+            <batchtest>
+                <fileset refid="junit.files"/>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="runtestfile" >
+        <!-- to use this from command line specify '-Dmodule=value' -->
+        <!-- This will run all test files with the matching name -->
+        <!-- You do not need to specify the prefix (TI) or suffix (.java) if desired -->
+        <junit fork="true" maxmemory="512m">
+            <classpath refid="junit.class.path"/>
+            <formatter type="plain" usefile="brief"/>
+            <batchtest haltonerror="true">
+                <fileset dir="${test.java.src.dir}" >
+                    <include name="**/T?_${module}.java" />
+                    <include name="**/T?_${module}" />
+                    <include name="**/${module}.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="runalltests" >
+        <junit fork="true" maxmemory="512m" printsummary="true">
+            <sysproperty key="net.sourceforge.cobertura.datafile" file="${tools.java.cobertura.dir}/cobertura.ser" />
+            <classpath refid="junit.class.path"/>
+            <formatter type="xml"/>
+            <batchtest todir="${test.java.junits.dir}">
+                <fileset dir="${test.java.src.dir}" >
+                    <include name="**/T?_*.java" />
+                    <exclude name="**/T?_*Abstract*.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${test.java.junits.dir}">
+            <fileset dir="${test.java.junits.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${test.java.junits.dir}"/>
+        </junitreport>
+    </target>
+
+</project>

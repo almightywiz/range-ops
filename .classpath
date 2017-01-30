@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="server/java/build/classes" path="server/java/src"/>
+	<classpathentry kind="src" output="test/java/build/classes" path="test/java/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="server/java/3rdParty/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="server/java/3rdParty/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="test/java/3rdParty/junit-4.8.2.jar"/>
+	<classpathentry kind="lib" path="test/java/3rdParty/mockito-all-1.8.5.jar"/>
+	<classpathentry kind="output" path="server/java/build/classes"/>
+</classpath>
